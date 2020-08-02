@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/services.dart';
+import 'package:wakelock/wakelock.dart';
 
 class FullVideo extends StatefulWidget {
   final String link;
-  final String timeStamp;
-  FullVideo(this.link, this.timeStamp);
+  final int position;
+  FullVideo(this.link, this.position);
 
   @override
   _FullVideoState createState() => _FullVideoState();
@@ -16,56 +17,56 @@ class _FullVideoState extends State<FullVideo> {
   Future<void> _initializeVideoPlayerFuture;
   @override
   void initState() {
-    _controller = VideoPlayerController.network(
-      widget.link,
-      useCache: true
-    );
+    Wakelock.enable();
+    _controller = VideoPlayerController.network(widget.link, useCache: true);
 
     _initializeVideoPlayerFuture = _controller.initialize();
+    //_controller.seekTo(Duration(seconds: widget.position));
+    _controller.play();
+    
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
-  ]);
+    ]);
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    Wakelock.disable();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-  ]);
+    ]);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-          body: Center(
-            child: GestureDetector(
-              onDoubleTap: (){
-                Navigator.of(context).pop();
-                SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-  ]);
-              },
+      body: Center(
+        child: GestureDetector(
+          onDoubleTap: () {
+            Navigator.of(context).pop();
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+              DeviceOrientation.portraitDown,
+            ]);
+          },
           onTap: () {
             print(_controller.value.initialized.toString());
             setState(() {
               // If the video is playing, pause it.
               if (_controller.value.isPlaying) {
                 _controller.pause();
-              } else if (_controller.value.position == _controller.value.duration) {
-                
+              } else if (_controller.value.position ==
+                  _controller.value.duration) {
                 // If the video is paused, play it.
                 _controller.seekTo(Duration(microseconds: 1));
                 _controller.play();
-              }
-              else{
+              } else {
                 _controller.play();
               }
             });
@@ -84,12 +85,12 @@ class _FullVideoState extends State<FullVideo> {
                     // Use the VideoPlayer widget to display the video.
                     child: Stack(
                       alignment: Alignment.bottomCenter,
-                      children: [VideoPlayer(_controller),
-                      VideoProgressIndicator(_controller, allowScrubbing: true),
-                      
-                      
+                      children: [
+                        VideoPlayer(_controller),
+                        VideoProgressIndicator(_controller,
+                            allowScrubbing: true),
                       ],
-                      ),
+                    ),
                   );
                 } else {
                   // If the VideoPlayerController is still initializing, show a

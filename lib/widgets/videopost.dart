@@ -18,8 +18,7 @@ class _VideoPostState extends State<VideoPost> {
   Future<void> _initializeVideoPlayerFuture;
   @override
   void initState() {
-    _controller = VideoPlayerController.network(widget.link, useCache: true
-    );
+    _controller = VideoPlayerController.network(widget.link, useCache: true);
 
     _initializeVideoPlayerFuture = _controller.initialize();
     super.initState();
@@ -37,11 +36,22 @@ class _VideoPostState extends State<VideoPost> {
       timeStamp: widget.timeStamp,
       child: GestureDetector(
         onDoubleTap: () {
+          print('position lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll');
+          print(_controller.value.position.toString());
+          print(_controller.value.duration);
+
+          _controller.pause();
+          final Duration duration = _controller.value.duration;
+          Duration position = _controller.value.position;
+          if (duration != null && position != null)
+            position = (position > duration) ? duration : position;
+            print(position.toString());
+
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      FullVideo(widget.link, widget.timeStamp)));
+                      FullVideo(widget.link, position.inSeconds)));
         },
         onTap: () {
           print(_controller.value.initialized.toString());

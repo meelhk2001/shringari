@@ -10,35 +10,39 @@ class AddPost extends StatefulWidget {
 
 class _AddPostState extends State<AddPost> {
   var dataType = 0;
-  final facebookLink ='https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2F';
+  final facebookLink =
+      'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2F';
   var link = TextEditingController();
   Future<void> _onPost(String link, int dataType) async {
     var timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
     link.trim();
-    if(dataType == 6){
-      if(link.contains('=')){
-       var sublink = link.substring(link.indexOf('=')+1);
-       link = sublink;
+    
+    try {
+
+      if (dataType == 6) {
+      if (link.contains('=')) {
+        var sublink = link.substring(link.indexOf('=') + 1);
+        link = sublink;
       }
-      if(link.contains('.be/')){
-        var sublink = link.substring(link.indexOf('.be/')+4);
+      if (link.contains('.be/')) {
+        var sublink = link.substring(link.indexOf('.be/') + 4);
         link = sublink;
       }
     }
-    if(dataType == 4){
-      var s1 = link.substring(link.indexOf('.com/')+5, link.indexOf('?')-1);
-       s1 = s1.replaceAll('/', '%2F');
-       link = facebookLink+ s1;
-       
+    if (dataType == 4) {
+      String s1;
+      if (link.contains('?')) {
+        s1 = link.substring(link.indexOf('.com/') + 5, link.indexOf('?') - 1);
+      } else {
+        s1 = link.substring(link.indexOf('.com/') + 5, link.length - 1);
+      }
+      s1 = s1.replaceAll('/', '%2F');
+      link = facebookLink + s1;
     }
-    if(dataType==5){
+    if (dataType == 5) {
       link = link.substring(0, link.indexOf('?')) + 'embed';
-      print('facebookkkkkkkkkkkkkkjkjkjkkkkkkkkkkkkkkhjkhh');
-       print(link);
     }
-    try {
-      // print('linkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
-      // print(link);
+
       var user = await FirebaseAuth.instance.currentUser();
       if (user == null) {
         return;
@@ -49,7 +53,21 @@ class _AddPostState extends State<AddPost> {
         'timeStamp': timeStamp,
         'user': user.uid
       });
+      Navigator.of(context).pop();
     } catch (error) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                content: Text('Unable to upload'),
+                actions: [
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Okey'))
+                ],
+              ));
+
       throw error;
     }
   }
@@ -71,8 +89,9 @@ class _AddPostState extends State<AddPost> {
               child: Column(
                 children: [
                   TextField(
-                      maxLines: 30,
-                      minLines: 10,
+                      cursorColor: Colors.orange[300],
+                      maxLines: null,
+                      //minLines: 4,
                       controller: link,
                       textInputAction: dataType != 0
                           ? TextInputAction.done
@@ -156,13 +175,12 @@ class _AddPostState extends State<AddPost> {
                     ],
                   ),
                   SizedBox(
-                    height: 70,
+                    height: 30,
                   ),
                   FlatButton(
                     color: Colors.orange[300],
                     onPressed: () {
                       _onPost(link.text, dataType);
-                      Navigator.of(context).pop();
                     },
                     child: Text('Post'),
                   )

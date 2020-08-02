@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:wakelock/wakelock.dart';
 import 'add_post.dart';
 import '../widgets/textpost.dart';
 import '../widgets/imagepost.dart';
@@ -23,6 +24,7 @@ class _HomeState extends State<Home> {
   //var _change = true;
   @override
   void initState() {
+    Wakelock.enable();
     myScroll();
     super.initState();
   }
