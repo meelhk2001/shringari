@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import '../zoomed/fullfacebook.dart';
+import '../zoomed/fullsocial.dart';
 import 'dart:async';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'holder.dart';
 //import 'package:flutter_html/flutter_html.dart';
 
-class Facebook extends StatefulWidget {
+class Social extends StatefulWidget {
   final String link;
   final String timeStamp;
-  Facebook(this.link, this.timeStamp);
+  Social(this.link, this.timeStamp);
   @override
-  _FacebookState createState() => _FacebookState();
+  _SocialState createState() => _SocialState();
 }
 
-class _FacebookState extends State<Facebook> {
+class _SocialState extends State<Social> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
@@ -43,7 +43,7 @@ class _FacebookState extends State<Facebook> {
             GestureDetector(
               onTap: (){
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => FullFacebook(widget.link)));
+                    MaterialPageRoute(builder: (context) => FullSocial(widget.link)));
               },
             )
           ],

@@ -8,9 +8,8 @@ import 'add_post.dart';
 import '../widgets/textpost.dart';
 import '../widgets/imagepost.dart';
 import '../widgets/videopost.dart';
-import '../widgets/facebook.dart';
+import '../widgets/social.dart';
 import '../widgets/youtube.dart';
-import '../widgets/twitter.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -113,27 +112,12 @@ class _HomeState extends State<Home> {
                                       : document[index]['dataType'] == 2
                                           ? VideoPost(document[index]['link'],
                                               document[index]['timeStamp'])
-                                          : document[index]['dataType'] == 3
-                                              ? Twitter(document[index]['link'],
+                                          : document[index]['dataType'] == 6
+                                              ? Youtube(document[index]['link'],
                                                   document[index]['timeStamp'])
-                                              : document[index]['dataType'] == 4
-                                                  ? Facebook(
-                                                      document[index]['link'],
-                                                      document[index]
-                                                          ['timeStamp'])
-                                                  : document[index]
-                                                              ['dataType'] ==
-                                                          5
-                                                      ? Facebook(
-                                                          document[index]
-                                                              ['link'],
-                                                          document[index]
-                                                              ['timeStamp'])
-                                                      : Youtube(
-                                                          document[index]
-                                                              ['link'],
-                                                          document[index]
-                                                              ['timeStamp']),
+                                              : Social(
+                                                  document[index]['link'],
+                                                  document[index]['timeStamp']),
                             ],
                           ));
                 } else {

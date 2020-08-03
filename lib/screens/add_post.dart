@@ -12,12 +12,19 @@ class _AddPostState extends State<AddPost> {
   var dataType = 0;
   final facebookLink =
       'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2F';
+  final twitterLink = 'https://twitframe.com/show?url=';
   var link = TextEditingController();
   Future<void> _onPost(String link, int dataType) async {
     var timeStamp = DateTime.now().millisecondsSinceEpoch.toString();
     link.trim();
     
     try {
+
+      if(dataType== 3){
+        link = link.replaceAll('://', '%3A%2F%2F');
+        link= link.replaceAll('/', '%2F');
+        link = twitterLink + link;
+      }
 
       if (dataType == 6) {
       if (link.contains('=')) {
